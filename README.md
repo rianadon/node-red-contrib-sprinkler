@@ -10,7 +10,9 @@ Looking for more flexibility than your dumb sprinkler controller provides? Use N
 :brain: Use machine learning to optimize your watering schedule †\
 :exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
 
-*Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.* \
+*Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.*
+
+------
 *† Maybe linear regression with weather data? Please don't make me use tensorflow.*
 
 ## Getting started
