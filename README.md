@@ -51,9 +51,15 @@ In the examples here with two programs, it has been assumed each program is for 
 
 ![Advanced flow program screenshot](./screenshots/advanced-flow.png)
 
+### Queue
+
 To ensure no two programs run at once, you can route incoming messages through a queue. [Simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue) has a good queue node for this purpose. At the beginning of the program, the triggers will enter the queue. One will pass through (make sure you turn on *"bypass first message"* for this!), and the rest will wait in line. After each program finishes, route the message into a change node, set `msg.reset`, and pass the message into the queue node to release the next trigger waiting in line.
 
 You may be rightly concerned that the queue node is connected to two different nodes. When the message is released from the queue, it will be sent to both nodes! Why don't they both turn on? The **run-gate** node sets `msg.program` to the program's name. **zone-timer** nodes will check this property and drop the incoming message if it is meant for a different program. If instead of a **zone-timer** you put a different node after the queue, make sure to put a switch node or simply add another **run-gate** between the queue and your node to drop messages meant for other programs.
+
+### Multiple zones per timer
+
+In most cases, you probably want zones to turn on one by one. But what if you'd like two zones to be on while a timer is running? The **zone-out** node acts as a simple switch to immediately turn a node on or off, without doing any timing. You can add one node before and one node after your timer, as shown in the above example, to run a second zone concurrently with the timer. In the example, both the "Tiny tomatoes" and "Huge tomatoes" zones will be on at the same time.
 
 ## Dashboards
 
