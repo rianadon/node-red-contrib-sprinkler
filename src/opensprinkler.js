@@ -73,6 +73,7 @@ module.exports = function(RED) {
             }
         });
         this.on('close', () => {
+            // Turn off all zones when Node-RED restarts the flow
             sendRequest(offRequest(password), (err) => console.log(err), (dat) => console.log(dat));
         });
     }
@@ -83,6 +84,7 @@ module.exports = function(RED) {
     });
 }
 
+/** Returns the URL to turn a zone on or off. */
 function zoneRequest(zone, enable, time, password) {
     let url = "/cm?pw="+password+"&sid=" + zone;
     if (enable) {
@@ -93,6 +95,7 @@ function zoneRequest(zone, enable, time, password) {
     return url;
 }
 
+/** Returns the URL to turn all zones off. */
 function offRequest(password) {
     return "/cv?pw="+password+"&rsn=1";
 }

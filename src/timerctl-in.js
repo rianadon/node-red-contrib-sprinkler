@@ -4,6 +4,7 @@ module.exports = function(RED) {
         this.program = RED.nodes.getNode(config.program);
         if (!this.program) return;
 
+        // Send state messages to our first output
         const onState = (state) => {
             this.send([{
                 topic: config.stateCmd,
@@ -11,6 +12,7 @@ module.exports = function(RED) {
                 program: this.program.name,
             }, null]);
         };
+        // Send tick messages to our second output
         const onTick = (tick) => {
             this.send([null, {
                 topic: config.tickCmd,

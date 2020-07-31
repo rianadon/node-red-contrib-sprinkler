@@ -1,13 +1,16 @@
 # Node-red-contrib-sprinkler
 
-The most powerful sprinkler and irrigation controller.
+Looking for more flexibility than your dumb sprinkler controller provides? Use Node-RED flows to:
 
-:crystal_ball: Use custom sensor and data to adjust watering based on rain levels, humidity, and forecasts\
+:crystal_ball: Use custom sensors and weather data to adjust watering based on rain levels, humidity, and forecasts\
 :sunny: Set different schedules for summer and winter, or May and June\
 :bell: Send notifications when a zone turns on or when a program runs\
-:desktop_computer: Use your own UI or use one of the examples\
-:robot: Connect to OpenSprinkler, MQTT, or GPIO pins\
+:desktop_computer: Use your own UI or customize one of the examples\
+:robot: Connect to OpenSprinkler, MQTT, or GPIO pins. Hardware independent!\
+:brain: Use machine learning to optimize your watering schedule (maybe linear regression with weather data?)\
 :exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
+
+*Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.*
 
 ## Getting started
 

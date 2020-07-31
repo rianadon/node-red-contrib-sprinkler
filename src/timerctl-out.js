@@ -13,6 +13,7 @@ module.exports = function(RED) {
             let seconds = getSeconds(msg.payload);
             if (seconds <= 0) seconds = 60;
 
+            if (!msg.topic) return;
             if (msg.topic == config.pauseCmd) {
                 this.program.emit('pause');
                 if (!config.noblock) this.program.emit('block');
@@ -28,6 +29,11 @@ module.exports = function(RED) {
                 this.program.emit('adjust', 0);
             } else if (msg.topic == config.adjustCmd) {
                 this.program.emit('adjust', seconds);
+            } else if (msg.topic == config.scaleCmd) {
+                const castPayload = Number(msg.payload);
+                if (isNaN(castPayload)) return done('Scale ' + msg.payload + ' is not a number');
+                if (castPayload > 2) this.warn('Scale ' + msg.payload + ' is fairly large. A scale of 1 means 100%.');
+                this.program.emit('scale', castPayload);
             }
             done();
         });

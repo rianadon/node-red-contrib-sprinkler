@@ -3,6 +3,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         this.name = config.name;
         this.state = 'stopped';
+        this.scale = 1; // time to scale how long the timer will wait
         this.resolution = 1000; // tick every second
 
         // Zone stuff (events from zone-timer and zone-out nodes)
@@ -21,7 +22,7 @@ module.exports = function(RED) {
         // Handle timer events that are sent from timerctl-in and zone-timer nodes
         this.on('start', (timeout) => {
             if (this.state != 'stopped') return;
-            set('tick', timeout);
+            set('tick', Math.round(timeout * this.scale));
             resumeTimer();
         });
         this.on('resume', () => {
@@ -46,6 +47,11 @@ module.exports = function(RED) {
                 clearTimeout(this.ticker);
                 tick();
             }
+        });
+        this.on('scale', (newscale) => {
+            // Update current ticks to use the new scaling
+            set('tick', Math.round(this.tick / this.scale * newscale));
+            this.scale = newscale;
         });
 
         // start the timer, whether it was stopped or paused

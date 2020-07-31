@@ -13,6 +13,7 @@
             incrementCmd: {value:"increment"},
             adjustCmd: {value:"adjust"},
             skipCmd: {value:"skip"},
+            scaleCmd: {value:"scale"},
         },
         inputs:1,
         outputs:0,
@@ -67,6 +68,10 @@
     <label for="node-input-adjustCmd"><i class="fa fa-undo"></i> Adjust</label>
         <input type="text" id="node-input-adjustCmd" placeholder="adjust" style="width:40%">
     </div>
+    <div class="form-row">
+    <label for="node-input-scaleCmd"><i class="fa fa-compress"></i> Scale</label>
+        <input type="text" id="node-input-scaleCmd" placeholder="scale" style="width:40%">
+    </div>
 </script>
 
 <script type="text/html" data-help-name="timerctl out">
@@ -91,9 +96,15 @@
     <h3>Skip</h3>
     <p>Stops the timer and immediately proceeds as if the timer had just reached zero time remaining.</p>
     <h3>Adjust</h3>
-    <p>Resets the timer's configured duration to <code>msg.payload</code>. If a zero or non-negative duration is given, the command will perform like a skip command.
+    <p>Resets the timer's configured duration to <code>msg.payload</code>. If a zero or non-negative duration is given, the command will perform like a skip command.</p>
     <dl class="message-properties">
         <dt>payload <span class="property-type">string | number</span></dt>
         <dd>Either number of seconds or a formatted amount of time (eg <i>"3m"</i>)</dd>
+    </dl>
+    <h3>Scale</h3>
+    <p>Scales the currently running timer and all future timers by <code>msg.payload</code>. Useful for changing watering based on weather conditions.</p>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">number</span></dt>
+        <dd>Fraction by which timer durations are multiplied by. The fraction 1 is 100%.</dd>
     </dl>
 </script>

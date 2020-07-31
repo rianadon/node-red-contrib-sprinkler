@@ -3,6 +3,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         this.program = RED.nodes.getNode(config.program);
 
+        // Set the node status whenever timer state changes
         const onState = (state) => {
             if (state == 'stopped') {
                 this.status({ fill:'grey', shape:'ring', text: this.program.name });
@@ -23,6 +24,8 @@ module.exports = function(RED) {
             // Don't handle messages that are meant for a different program
             if (msg.program && msg.program != this.program.name) return done();
 
+            // Pass the message through if the program is stopped (not started, not paused,
+            // and not blocked). Otheriwse, don't send the message.
             if (this.program.state == 'stopped') {
                 msg.program = this.program.name;
                 send(msg);

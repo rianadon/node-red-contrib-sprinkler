@@ -39,7 +39,7 @@ module.exports = function(RED) {
                 } else if (state == 'running') { // Change status when timer starts/resumes
                     if (this.lastTick) this.status({ fill: 'blue', shape: 'dot', text: 'Running: ' + this.lastTick });
                     // Trigger the zone to be on. We'll handle this event as soon as the timer turns on,
-                    // so the zone turn on for the first time here!
+                    // so the zone will turn on for the first time here!
                     this.program.emit('set-zone', zoneName, onVal);
                 }
             }

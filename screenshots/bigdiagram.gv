@@ -18,6 +18,7 @@ digraph G {
     "timerctl out" -> program [label="block"];
     "timerctl out" -> program [label="unblock"];
     "timerctl out" -> program [label="adjust"];
+    "timerctl out" -> program [label="scale"];
     program -> "timerctl in" [label="state"];
     program -> "timerctl in" [label="tick"];
 }
