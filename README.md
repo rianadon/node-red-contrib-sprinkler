@@ -7,10 +7,11 @@ Looking for more flexibility than your dumb sprinkler controller provides? Use N
 :bell: Send notifications when a zone turns on or when a program runs\
 :desktop_computer: Use your own UI or customize one of the examples\
 :robot: Connect to OpenSprinkler, MQTT, or GPIO pins. Hardware independent!\
-:brain: Use machine learning to optimize your watering schedule (maybe linear regression with weather data?)\
+:brain: Use machine learning to optimize your watering schedule †\
 :exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
 
-*Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.*
+*Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.* \
+*† Maybe linear regression with weather data? Please don't make me use tensorflow.*
 
 ## Getting started
 
@@ -21,9 +22,10 @@ Looking for more flexibility than your dumb sprinkler controller provides? Use N
 Create a sequence of **zone timer** nodes. Here, each timer duration is set to `3s`.
 To create the sequence, you'll need to define a **program** configuration. Programs here are very similar to the concept of "program" traditionally used in irrigation systems: A program is a sequence of zones turned on for different durations. There are some more things to know about programs, but these will be explained later.
 
-For debugging, connect an inject node to the beginning so you can trigger the program. In a real flow, you likely set the inject node to repeat at a certain time and on certain days. For more control, you may wan to use an advanced timer node like [eztimer](https://flows.nodered.org/node/node-red-contrib-eztimer) or [bigtimer](https://flows.nodered.org/node/node-red-contrib-bigtimer). More advanced timers allow you to trigger only during certain months/seasons, randomize start times, make exceptions for certain dates, and much more! Note that for **bigtimer**, you'll have to put a switch node after to ignore the off events, otherwise your program will run twice per day!
+For debugging, connect an inject node to the beginning so you can trigger the program. In a real flow, you likely set the inject node to repeat at a certain time and on certain days. For more control, you may wan to use an advanced timer node like [eztimer](https://flows.nodered.org/node/node-red-contrib-eztimer) or [bigtimer](https://flows.nodered.org/node/node-red-contrib-bigtimer). More advanced timers allow you to trigger only during certain months/seasons, randomize start times, make exceptions for certain dates, and much more! Note that for **eztimer** you'll want to set *"Timer Type"* to trigger only and for **bigtimer** you'll have to put a switch node after to ignore the off events, otherwise your program will run twice per day!
 
 After you assemble your schedule, you'll likely want to actually control your irrigation hardware. A **zone in** node will send messages whenever a zone turns on or off. You can connect it to:
+
 - a debug node for debugging
 - the built-in **opensprinkler** node if your device runs OpenSprinkler
 - a template node to transform the zone name into an MQTT topic and then an MQTT node
@@ -47,7 +49,7 @@ In the examples here with two programs, it has been assumed each program is for 
 
 ![Advanced flow program screenshot](./screenshots/advanced-flow.png)
 
-To ensure no two programs run at once, you can route incoming messages a queue. [Simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue) has a good queue node for this purpose. At the beginning of the program, the triggers will enter the queue. One will pass through (make sure you turn on *"bypass first message"* for this!), and the rest will wait in line. After each program, route the message into a change node, set `msg.reset`, and pass the message into the queue node to release the next trigger waiting in line.
+To ensure no two programs run at once, you can route incoming messages through a queue. [Simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue) has a good queue node for this purpose. At the beginning of the program, the triggers will enter the queue. One will pass through (make sure you turn on *"bypass first message"* for this!), and the rest will wait in line. After each program finishes, route the message into a change node, set `msg.reset`, and pass the message into the queue node to release the next trigger waiting in line.
 
 You may be rightly concerned that the queue node is connected to two different nodes. When the message is released from the queue, it will be sent to both nodes! Why don't they both turn on? The **run-gate** node sets `msg.program` to the program's name. **zone-timer** nodes will check this property and drop the incoming message if it is meant for a different program. If instead of a **zone-timer** you put a different node after the queue, make sure to put a switch node or simply add another **run-gate** between the queue and your node to drop messages meant for other programs.
 
@@ -62,6 +64,16 @@ This example uses the [node-red-dashboard](https://flows.nodered.org/node/node-r
 ## Node Documentation
 
 There's a lot of it, so it's best to just install the extension then view the docs insine Node-RED's Help pane.
+
+### Duration format
+
+This library uses the same duration format as [eztimer](https://github.com/mrgadget/node-red-contrib-eztimer#times). Here are some examples of valid formats:
+* `45` (number or string) - 45 seconds
+* `5h 4m 45s` (string) - 5 hours, 4 minutes, 45 seconds
+* `5:04:45` (string) - 5 hours, 4 minutes, 45 seconds
+* `5:04` (string) - 5 hours, 4 minutes
+
+The code for durations is shamelessly copied form eztimer, so huge thanks to that project.
 
 ## How it works
 
