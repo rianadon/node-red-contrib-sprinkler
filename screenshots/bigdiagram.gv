@@ -1,5 +1,5 @@
 digraph G {
-    graph [rankdir=LR]
+    graph [rankdir=TB]
     "zone timer" [shape=Mrecord,style=filled,fillcolor="#89C1A8"];
     "zone out" [shape=Mrecord,style=filled,fillcolor="#7DB3C4"];
     "zone in" [shape=Mrecord,style=filled,fillcolor="#7DB3C4"];
@@ -8,6 +8,9 @@ digraph G {
     program [shape=Mrecord,style=filled,fillcolor="#DDDDDD"];
 
     "zone timer" -> program [label="set-zone"];
+    "zone timer" -> program [label="start"];
+    program -> "zone timer" [label="state"];
+    program -> "zone timer" [style=dashed,label="tick"];
     "zone out" -> program [label="set-zone"];
     program -> "zone in" [label="zone-set"];
     "timerctl out" -> program [label="pause"];

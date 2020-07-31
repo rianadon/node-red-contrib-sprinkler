@@ -41,7 +41,7 @@ In the examples here with two programs, it has been assumed each program is for 
 
 To ensure no two programs run at once, you can route incoming messages a queue. [Simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue) has a good queue node for this purpose. At the beginning of the program, the triggers will enter the queue. One will pass through (make sure you turn on *"bypass first message"* for this!), and the rest will wait in line. After each program, route the message into a change node, set `msg.reset`, and pass the message into the queue node to release the next trigger waiting in line.
 
-You may be rightly concerned that the queue node is connected to two different nodes. When the message is released from the queue, it will be sent to both nodes! Why don't they both turn on? The **run-gate** node sets `msg.program` to the program's name. **zone-timer** nodes will check this property and drop the incoming message if it is meant for a different program. If you put any other nodes after the queue, make sure to put a switch node or simply add another **run-gate** between the queue and your node to drop the message.
+You may be rightly concerned that the queue node is connected to two different nodes. When the message is released from the queue, it will be sent to both nodes! Why don't they both turn on? The **run-gate** node sets `msg.program` to the program's name. **zone-timer** nodes will check this property and drop the incoming message if it is meant for a different program. If instead of a **zone-timer** you put a different node after the queue, make sure to put a switch node or simply add another **run-gate** between the queue and your node to drop messages meant for other programs.
 
 ## Dashboards
 
@@ -68,6 +68,6 @@ Each program runs a timer. A visual representation of the various states of the 
 
 Another important function of the program is to act as a message bus, which simplifies wiring inside node-red. Whenever a zone is turned on or off, the **zone-timer** or **zone-out** node will send a message to change the zone over the program's message bus. The **zone-in** node will listen for these messages and send the appropriate message to connected nodes.
 
-Below is a depiction of the messages sent to and from the program node internally.
-
 ![Visual representation of how messages are routed](./screenshots/bigdiagram.svg)
+
+Above is a depiction of the messages sent to and from the program node internally. The tick connection to **zone-timer** is in dashed style as tick messages are not used for operation, but rather for updating the node's status displayed in the Node-RED editor.
