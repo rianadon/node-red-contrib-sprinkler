@@ -1,0 +1,13 @@
+digraph G {
+    graph [rankdir=RL]
+    paused [style=filled, fillcolor=lightyellow];
+    blocked [style=filled, fillcolor=pink];
+    paused -> running [label="resume"];
+    running -> paused [label="pause"];
+    stopped -> running [label="start"];
+    stopped -> blocked [label="block"];
+    blocked -> stopped [label="unblock"];
+    running -> stopped [style=dashed, label="tick, t=0\n(time runs out)"];
+    running -> running [style=dashed, label="tick, t>0"];
+    running:sw -> running [label="adjust (set t)"];
+}

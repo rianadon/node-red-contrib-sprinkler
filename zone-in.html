@@ -1,0 +1,55 @@
+<script type="text/javascript">
+    var strnumtypes = ["msg","flow","global","str","num","jsonata","env"];
+    RED.nodes.registerType('zone in',{
+        category: 'sprinkler',
+        color: '#80B8CA',
+        defaults: {
+            name: {value:""},
+            zonename: {value:""},
+            program: {value:"", type:"program", required:true},
+        },
+        inputs:0,
+        outputs:1,
+        icon: "font-awesome/fa-tint",
+        label: function() {
+            if (this.name) return this.name;
+            return this.zonename || "all zones";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="zone in">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+<!-- Program -->
+    <div class="form-row">
+        <label for="node-input-program"><i class="fa fa-map-signs"></i> Program</label>
+        <input type="text" id="node-input-program">
+    </div>
+<!-- Zone name -->
+    <div class="form-row">
+        <label for="node-input-zonename"><i class="fa fa-list"></i> Filter zone</label>
+        <input type="text" id="node-input-zonename">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="zone in">
+    <p>Injects a message when a zone changes value.</p>
+    <p>This node is used to send the zone data to the appropriate service. That service could e opensprinkler, mqtt topics, or GPIO pins on a Raspberry Pi.</p>
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>the name of the zone (set by the zone-timer or zone-out node).</dd>
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>the new zone value (set by the zone-timer or zone-out node).</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>
+    The node must be configured to listen for zone changes on a specific program. You can optionally filter for only listening for changes on a single zone (via the <i>"Filter zone"</i> option).
+    </p>
+</script>

@@ -1,0 +1,65 @@
+<script type="text/javascript">
+    var strnumtypes = ["msg","flow","global","str","num","jsonata","env"];
+    RED.nodes.registerType('timerctl in',{
+        category: 'sprinkler',
+        color: '#BEE6B0',
+        defaults: {
+            name: {value:""},
+            program: {value:"", type:"program", required:true},
+            stateCmd: {value:"state"},
+            tickCmd: {value:"tick"},
+        },
+        inputs:0,
+        outputs:2,
+        outputLabels: ["State", "Tick"],
+        icon: "font-awesome/fa-clock-o",
+        label: function() {
+            if (this.name) return this.name;
+            return this.zonename || "timerctl";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="timerctl in">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+<!-- Program -->
+    <div class="form-row">
+        <label for="node-input-program"><i class="fa fa-map-signs"></i> Program</label>
+        <input type="text" id="node-input-program">
+    </div>
+    <!-- commands -->
+    <div style="margin-bottom: 12px; margin-top: 18px"><b>Command topics</b></div>
+    <div class="form-row">
+        <label for="node-input-stateCmd"><i class="fa fa-television"></i> State</label>
+        <input type="text" id="node-input-stateCmd" placeholder="state" style="width:40%;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tickCmd"><i class="fa fa-bell-o"></i> Tick </label>
+        <input type="text" id="node-input-tickCmd" placeholder="tick" style="width:40%;">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="timerctl in">
+    <p>Injects messages as a program's timer ticks.</p>
+    <p>For each event, the node sends a message with the topic set according to its associated option. Payloads are described below.</p>
+    <p>The top output will send messages related to state changes, while the bottom one sends timer ticks.</p>
+    <h3>State</h3>
+    <p>Sent when the timer changes from paused -> running -> stopped.</p>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>Either <i>"paused"</i>, <i>"running"</i>, or <i>"stopped"</i></dd>
+    </dl>
+    <h3>Tick</h3>
+    <p>Sent every second as the timer counts down. If the timer is not ticking (timer is paused or stopped), no tick messages are sent.</p>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">number</span></dt>
+        <dd>The remaining time, in seconds, left in the timer.</dd>
+    </dl>
+    <p>
+</script>

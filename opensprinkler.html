@@ -1,0 +1,153 @@
+<script type="text/javascript">
+    var strnumtypes = ["msg","flow","global","str","num","jsonata","env"];
+    var alltypes = ["msg","flow","global","str","bool","json","bin","num","jsonata","date","env"];
+    RED.nodes.registerType('opensprinkler',{
+        category: 'sprinkler',
+        color: '#9CD1D7',
+        defaults: {
+            name: {value:""},
+            host: {value:"",required:true},
+            maxduration: {value:"18h", required:true},
+            maxdurationtype: {value:undefined},
+            usemap:{value:true},
+            map: {value:["", "", "", "", "", "", "", ""]},
+        },
+        credentials: {
+            password: {type:"password"}
+        },
+        inputs:1,
+        outputs:1,
+        align: 'left',
+        icon: "font-awesome/fa-tint",
+        label: function() {
+            return this.name||"";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            $("#node-input-maxduration").typedInput({
+                default: "str",
+                types:strnumtypes,
+                typeField: "#node-input-maxdurationtype"
+            });
+            var list = $("#node-input-mapping-container").css('min-height','240px').css('min-width','300px').editableList({
+                removable: true,
+                sortable: true,
+                addItem: function(row, index, data) {
+                    var val = typeof data == "string" ? data : "";
+                    var label = $("<label>", {style: "width: 100%; margin: 0"}).appendTo(row);
+                    $("<span>").text("Zone " + index).appendTo(label);
+                    $('<input>', {type: "text", placeholder: "Name", value: val}).appendTo(label);
+                },
+                sortItems: function(items) {
+                    items.each(function(index, row) {
+                        $("span", row).text("Zone " + index);
+                    });
+                },
+                removeItem: function(data) {
+                    $(list).editableList("items").each(function(index, row) {
+                        $("span", row).text("Zone " + index);
+                    });
+                }
+            });
+            if (!this.map) this.map = [""];
+            for (var i=0; i<this.map.length; i++) {
+                var rule = this.map[i];
+                $("#node-input-mapping-container").editableList('addItem',rule);
+            }
+            if (!this.usemap) $("#dialog-form>.node-input-mapping-container-row").hide();
+            $("#node-input-usemap").on("change", function() {
+                $("#dialog-form>.node-input-mapping-container-row").toggle(this.checked);
+            });
+        },
+        oneditsave: function() {
+            var map = $("#node-input-mapping-container").editableList('items');
+            var node = this;
+            node.map= [];
+            map.each(function(i) {
+                node.map.push(this.find("input").val());
+            });
+        },
+        oneditresize: function(size) {
+            var rows = $("#dialog-form>div:not(.node-input-mapping-container-row)");
+            var height = size.height;
+            for (var i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-mapping-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            height += 16;
+            $("#node-input-mapping-container").editableList('height',height);
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="opensprinkler">
+   <style>
+        ol#node-input-mapping-container span {
+            display: inline-block;width:100px;vertical-align:middle
+        }
+    </style>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+       <label for="node-input-host"><i class="fa fa-globe"></i> Host</label>
+       <input type="text" id="node-input-host">
+    </div>
+    <div class="form-row">
+       <label for="node-input-password"><i class="fa fa-lock"></i> Password</label>
+       <input type="password" id="node-input-password">
+     </div>
+     <div class="form-row">
+       <label for="node-input-maxduration"><i class="fa fa-clock-o"></i> Max on time</label>
+       <input type="text" id="node-input-maxduration" style="width: 70%">
+       <input type="hidden" id="node-input-maxdurationtype">
+     </div>
+     <div class="form-row">
+    <div class="form-tips" style="margin-bottom: 12px;">
+    <b>Note:</b> For best results, uncheck the <i>"Sequential"</i> option for every zone in the OpenSprinkler UI and disable all OpenSprinkler programs.
+    </div>
+    <div class="form-row">
+    <input type="checkbox" id="node-input-usemap" style="display:inline-block; width:auto; vertical-align:top;" />
+    <label for="node-input-usemap" style="width:90%;"></i> Map <code style="font-size:0.9em">msg.topic</code> from string to zone id (case insensitive)</label>
+    </div>
+    <div class="form-row node-input-mapping-container-row">
+        <ol id="node-input-mapping-container"></ol>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="opensprinkler">
+    <p>Controls zones through an OpenSprinkler API.</p>
+    <p>The node is designed to be placed immediately after a zone-in node, but has a very simple interface for use with other nodes.</p>
+    <h3>Input</h3>
+    <dl class="message-properties">
+        <dt>topic <span class="property-type">string|number</span></dt>
+        <dd>Either the id of the zone (starting at 0), or a name, depending on options.</dd>
+        <dt>payload <span class="property-type">boolean</span></dt>
+        <dd><code>true</code> to turn the zone on, <code>false</code> to turn it off</code></dd>
+    </dl>
+    <h3>Options</h3>
+    <ul>
+    <li><i>Host</i>: The URL you use to get to OpenSprinkler's web interface. Examples: full form like <i>"http://opensprinkler:8080"</i> or abbreviated like <i>"localhost"</i>.</li>
+    <li><i>Password</i>: The password used to log into OpenSprinkler.</li>
+    <li><i>Max on time</i>: Maximum time to keep the zone on. Afterwards, OpenSprinkler will automatically turn the zone off for you. Max is 18 hours, but set this low to make sure you don't accidentally water for a full day if something goes wrong.</li>
+    <li><i>Mapping</i>: If you'd prefer to use the actual names of zones rather than numbers, you can specify how the names map manually.</li>
+    </ul>
+    <h3>Output</h3>
+    <dl class="message-properties">
+        <dt>topic <span class="property-type">string|number</span></dt>
+        <dd>Same as input topic.</dd>
+        <dt>payload <span class="property-type">json</span></dt>
+        <dd>response from the OpenSprinkler API</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>
+    The response from the OpenSprinkler API will be <code>{response: 1}</code> if the call was successful, or <code>{response: 2}</code> if authentication failed. See the OpenSprinkler API manual for the full list of response codes.
+    </p>
+    <p>
+    If you notice problems, you may want to add a delay node in front with action set to <i>"Rate Limit"</i> and increase the rate to something substantial like 3 seconds. OpenSprinkler's sheduler seems to not like being asked to do many things at once.
+    </p>
+</script>

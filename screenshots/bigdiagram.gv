@@ -1,0 +1,20 @@
+digraph G {
+    graph [rankdir=LR]
+    "zone timer" [shape=Mrecord,style=filled,fillcolor="#89C1A8"];
+    "zone out" [shape=Mrecord,style=filled,fillcolor="#7DB3C4"];
+    "zone in" [shape=Mrecord,style=filled,fillcolor="#7DB3C4"];
+    "timerctl in" [shape=Mrecord,style=filled,fillcolor="#BEE6B0"];
+    "timerctl out" [shape=Mrecord,style=filled,fillcolor="#BEE6B0"];
+    program [shape=Mrecord,style=filled,fillcolor="#DDDDDD"];
+
+    "zone timer" -> program [label="set-zone"];
+    "zone out" -> program [label="set-zone"];
+    program -> "zone in" [label="zone-set"];
+    "timerctl out" -> program [label="pause"];
+    "timerctl out" -> program [label="resume"];
+    "timerctl out" -> program [label="block"];
+    "timerctl out" -> program [label="unblock"];
+    "timerctl out" -> program [label="adjust"];
+    program -> "timerctl in" [label="state"];
+    program -> "timerctl in" [label="tick"];
+}

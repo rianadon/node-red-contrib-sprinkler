@@ -1,0 +1,51 @@
+<script type="text/javascript">
+    var strnumtypes = ["msg","flow","global","str","num","jsonata","env"];
+    var alltypes = ["msg","flow","global","str","bool","json","bin","num","jsonata","date","env"];
+    RED.nodes.registerType('run-gate',{
+        category: 'sprinkler',
+        color: '#C1A689',
+        defaults: {
+            name: {value:""},
+            program: {value:"", type:"program", required:true},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-pause",
+        label: function() {
+            return this.name||"gate";
+        },
+        paletteName: "run gate",
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="run-gate">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+<!-- Program -->
+    <div class="form-row">
+        <label for="node-input-program"><i class="fa fa-map-signs"></i> Program</label>
+        <input type="text" id="node-input-program">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="run-gate">
+    <p>Passes messages when a program is stopped but drops messages if the program is paused or running.</p>
+    <h3>Details</h3>
+    <p>If the run-gate is currently dropping messages, it will say so in its status.</p>
+    <p>
+    Run-gate nodes should be placed before any sequence of zone-timer nodes. Imagine a flow with two zone timers connected sequentially, meant to be run one after another. If a message is sent to the first zone-timer as the second is running, both zone-timers may be accidentally started in parallel. Luckily zone-timers will throw an error and stop processing in this case, so there is no need to worry about two zones meant to be sequential being turned on concurrently. But it is best to use a run-gate to avoid this circumstance altogether.
+    </p>
+    <p>
+    <h4>Flow control:</h4>
+    If the gate is passing messages, it will set the <code>msg.program</code> property on every message to the name of the gate's program. Zone-timer nodes use this property to decide whether to process an input.
+    </p>
+    <p>
+    This is useful when placing a queue or throttling node between several run-gate and zone-timer nodes.
+    Messages can be sent from a single queue to multiple zone-timers and will be correctly routed, if each message is originally passed through a run-gate node.
+    </p>
+</script>

@@ -1,0 +1,123 @@
+<script type="text/javascript">
+    var strnumtypes = ["msg","flow","global","str","num","jsonata","env"];
+    var alltypes = ["msg","flow","global","str","bool","json","bin","num","jsonata","date","env"];
+    RED.nodes.registerType('zone-timer',{
+        category: 'sprinkler',
+        color: '#89C1A8',
+        defaults: {
+            name: {value:""},
+            zonename: {value:"", required:true},
+            zonenametype: {value:undefined},
+            duration: {value:"5m", required:true},
+            durationtype: {value:undefined},
+            program: {value:"", type:"program", required:true},
+            onval: {value:true},
+            onvaltype: {value:undefined},
+            offval: {value:false},
+            offvaltype: {value:undefined},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-clock-o",
+        label: function() {
+            if (this.name) return this.name;
+            if (!this.zonename || !this.duration) return "zone timer";
+            return this.zonename + " for " + this.duration;
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteName: 'zone timer',
+        oneditprepare: function() {
+            $("#node-input-zonename").typedInput({
+                default: "str",
+                types:strnumtypes,
+                typeField: "#node-input-zonenametype"
+            });
+            $("#node-input-duration").typedInput({
+                default: "str",
+                types:strnumtypes,
+                typeField: "#node-input-durationtype"
+            });
+            $("#node-input-onval").typedInput({
+                default: "bool",
+                types:alltypes,
+                typeField: "#node-input-onvaltype"
+            });
+            $("#node-input-offval").typedInput({
+                default: "bool",
+                types:alltypes,
+                typeField: "#node-input-offvaltype"
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="zone-timer">
+<!-- Program -->
+    <div class="form-row">
+        <label for="node-input-program"><i class="fa fa-map-signs"></i> Program</label>
+        <input type="text" id="node-input-program">
+    </div>
+<!-- Zone name -->
+    <div class="form-row">
+        <label for="node-input-zonename"><i class="fa fa-list"></i> Zone name</label>
+        <input type="text" id="node-input-zonename" style="width: 70%">
+        <input type="hidden" id="node-input-zonenametype">
+    </div>
+<!-- Duration -->
+    <div class="form-row">
+        <label for="node-input-duration"><i class="fa fa-clock-o"></i> Duration</label>
+        <input type="text" id="node-input-duration" style="width: 70%">
+        <input type="hidden" id="node-input-durationtype">
+    </div>
+    <div class="form-tips" style="margin-bottom: 12px;">
+    <b>Note:</b> Duration can be specified in <i>1:32</i> format, <i>1h 32m 5s</i> format, or as a number of seconds (<i>eg 300</i>).
+    </div>
+<!-- On value -->
+    <div class="form-row">
+        <label for="node-input-onval"><i class="fa fa-circle"></i> On value</label>
+        <input type="text" id="node-input-onval" placeholder="true" style="width:40%;">
+        <input type="hidden" id="node-input-onvaltype">
+    </div>
+<!-- Off value -->
+    <div class="form-row">
+        <label for="node-input-offval"><i class="fa fa-circle-o"></i> Off value </label>
+        <input type="hidden" id="node-input-offvaltype">
+        <input type="text" id="node-input-offval" placeholder="false" style="width:40%;">
+    </div>
+<!-- Name -->
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="zone-timer">
+    <p>Turns a zone on for some time, then turns the zone off and sends a message.</p>
+    <h3>Details</h3>
+    <p>
+    The zone name, duration, and values used for turning the zone on and off can be specified within the node's configuration.
+    These can be either static strings or dynamically computed from <code>msg.payload</code> or some other property.
+    Documentation of the duration format is found in the library documentation.
+    </p>
+    <p>
+    <h4>Input behavior:</h4>
+When the node receives an input, it will queue the message. This message is sent when the timer (set for the given duration) expires.
+    </p><p>
+    The timer is owned by the program to which the node is configured to connect. Thus, if multiple zone-timer nodes share the same program, they will share the same timer. It is important for this reason to ensure two zone-timers connected to the same program will never use the timer at the same time.
+    </p>
+    <p>Sending a message as the timer is counting will result in an error.</p>
+    <h4>On/off value</h4>
+    <p>
+    Commonly, this value is either the boolean <code>true</code> for turning on a zone and <code>false</code> for turning it off, but may be set to a string like <code>on</code> or <code>off</code> for easier use with an mqtt service.
+    </p>
+    <h4>Flow control:</h4>
+    <p>If <code>msg.program</code> is specified, the node will check its program's name against <code>msg.program</code>.
+    If they match, the input is processed and the timer is started. If they do not match, the node will ignore the message.
+    </p>
+    <p>
+    This is useful when placing a queue or throttling node between several run-gate and zone-timer nodes.
+    Messages can be sent from a single queue to multiple zone-timers and will be correctly routed, if each message is originally passed through a run-gate node.
+    </p>
+</script>

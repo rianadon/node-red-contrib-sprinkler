@@ -1,0 +1,27 @@
+{
+  "name": "node-red-contrib-sprinkler",
+  "version": "1.0.0",
+  "description": "Sprinkler controls for node-red",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "node-red": {
+    "nodes": {
+      "program": "program.js",
+      "zone-timer": "zone-timer.js",
+      "zone in": "zone-in.js",
+      "zone out": "zone-out.js",
+      "timerctl in": "timerctl-in.js",
+      "timerctl out": "timerctl-out.js",
+      "opensprinkler": "opensprinkler.js",
+      "run-gate": "run-gate.js"
+    }
+  },
+  "devDependencies": {
+    "mocha": "^8.0.1",
+    "node-red": "^1.1.2",
+    "node-red-node-test-helper": "^0.2.5"
+  }
+}

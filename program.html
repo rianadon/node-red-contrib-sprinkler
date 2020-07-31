@@ -1,0 +1,23 @@
+<script type="text/javascript">
+    RED.nodes.registerType('program',{
+        category: 'config',
+        defaults: {
+            name: {value:"",required: true},
+        },
+        label: function() {
+            return this.name;
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="program">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="program">
+    <p>Runs a timer and coordinates zones.</p>
+    <p>These timers are used by zone-timer nodes and controlled by timerctl nodes. The node also handles passing zone events between zone nodes and zone-timer nodes.</p>
+</script>

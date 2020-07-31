@@ -1,0 +1,74 @@
+<script type="text/javascript">
+    var strnumtypes = ["msg","flow","global","str","num","jsonata","env"];
+    var alltypes = ["msg","flow","global","str","bool","json","bin","num","jsonata","date","env"];
+    RED.nodes.registerType('zone out',{
+        category: 'sprinkler',
+        color: '#7DB3C4',
+        defaults: {
+            name: {value:""},
+            program: {value:"", type:"program", required:true},
+            zonename: {value:"", required:true},
+            zonenametype: {value:undefined},
+            val: {value:true},
+            valtype: {value:undefined},
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "font-awesome/fa-tint",
+        label: function() {
+            if (this.name) return this.name;
+            return this.zonename||"zone";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            $("#node-input-zonename").typedInput({
+                default: "str",
+                types:strnumtypes,
+                typeField: "#node-input-zonenametype"
+            });
+            $("#node-input-val").typedInput({
+                default: "bool",
+                types:alltypes,
+                typeField: "#node-input-valtype"
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="zone out">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+<!-- Program -->
+    <div class="form-row">
+        <label for="node-input-program"><i class="fa fa-map-signs"></i> Program</label>
+        <input type="text" id="node-input-program">
+    </div>
+<!-- Zone name -->
+    <div class="form-row">
+        <label for="node-input-zonename"><i class="fa fa-list"></i> Zone name</label>
+        <input type="text" id="node-input-zonename" style="width: 70%">
+        <input type="hidden" id="node-input-zonenametype">
+    </div>
+<!-- Value -->
+    <div class="form-row">
+        <label for="node-input-val"><i class="fa fa-toggle-on"></i> Value</label>
+        <input type="text" id="node-input-val" placeholder="true" style="width:40%;">
+        <input type="hidden" id="node-input-valtype">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="zone out">
+    <p>Turns a zone on or off.</p>
+    <h3>Details</h3>
+    <p>
+    The program, zone name, and value must be configured. The zone name is the topic of the message sent from a zone-in node, and the message will be sent from a zone-in node with a matching program. The payload of that message will be set to the value configuration. Commonly, this value is either the boolean <code>true</code> for turning on a zone and <code>false</code> for turning it off, but may be set to a string like <code>on</code> or <code>off</code> for easier use with an mqtt service.
+    </p>
+    <p>
+    Set the <i>"Value"</i> option to <code>msg.payload</code> to control the zone value with incoming messages.
+    </p>
+</script>
