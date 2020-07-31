@@ -2,7 +2,12 @@
 
 The most powerful sprinkler and irrigation controller.
 
-Need to set up complex programs? Set different schedules for summer and winter? Adjust watering based on rain levels, humidity, and forecasts all at once? Pause a program for debugging? Send notifications when a zone turns on? Use your own UI? Connect to OpenSprinkler? MQTT? GPIO pins?
+:crystal_ball: Use custom sensor and data to adjust watering based on rain levels, humidity, and forecasts\
+:sunny: Set different schedules for summer and winter, or May and June\
+:bell: Send notifications when a zone turns on or when a program runs\
+:desktop_computer: Use your own UI or use one of the examples\
+:robot: Connect to OpenSprinkler, MQTT, or GPIO pins\
+:exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
 
 ## Getting started
 
@@ -13,7 +18,7 @@ Need to set up complex programs? Set different schedules for summer and winter? 
 Create a sequence of **zone timer** nodes. Here, each timer duration is set to `3s`.
 To create the sequence, you'll need to define a **program** configuration. Programs here are very similar to the concept of "program" traditionally used in irrigation systems: A program is a sequence of zones turned on for different durations. There are some more things to know about programs, but these will be explained later.
 
-For debugging, connect an inject node to the beginning so you can trigger the program. In a real flow, you likely set the inject node to repeat at a certain time and on certain days. For more control, you may wan to use an advanced timer node like [eztimer](https://flows.nodered.org/node/node-red-contrib-eztimer) or [bigtimer](https://flows.nodered.org/node/node-red-contrib-bigtimer). Note that for **bigtimer**, you'll have to put a switch node after to ignore the off events, otherwise your program will run twice per day!
+For debugging, connect an inject node to the beginning so you can trigger the program. In a real flow, you likely set the inject node to repeat at a certain time and on certain days. For more control, you may wan to use an advanced timer node like [eztimer](https://flows.nodered.org/node/node-red-contrib-eztimer) or [bigtimer](https://flows.nodered.org/node/node-red-contrib-bigtimer). More advanced timers allow you to trigger only during certain months/seasons, randomize start times, make exceptions for certain dates, and much more! Note that for **bigtimer**, you'll have to put a switch node after to ignore the off events, otherwise your program will run twice per day!
 
 After you assemble your schedule, you'll likely want to actually control your irrigation hardware. A **zone in** node will send messages whenever a zone turns on or off. You can connect it to:
 - a debug node for debugging
