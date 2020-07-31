@@ -19,6 +19,10 @@ module.exports = function(RED) {
         }
         this.on('input', (msg, send, done) => {
             if (!this.program) return done('Gate closed because no program specified');
+
+            // Don't handle messages that are meant for a different program
+            if (msg.program && msg.program != this.program.name) return done();
+
             if (this.program.state == 'stopped') {
                 msg.program = this.program.name;
                 send(msg);

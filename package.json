@@ -6,17 +6,18 @@
     "test": "mocha test.js"
   },
   "author": "",
+  "keywords": [ "node-red" ],
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "program": "program.js",
-      "zone-timer": "zone-timer.js",
-      "zone in": "zone-in.js",
-      "zone out": "zone-out.js",
-      "timerctl in": "timerctl-in.js",
-      "timerctl out": "timerctl-out.js",
-      "opensprinkler": "opensprinkler.js",
-      "run-gate": "run-gate.js"
+      "program": "src/program.js",
+      "zone-timer": "src/zone-timer.js",
+      "zone in": "src/zone-in.js",
+      "zone out": "src/zone-out.js",
+      "timerctl in": "src/timerctl-in.js",
+      "timerctl out": "src/timerctl-out.js",
+      "opensprinkler": "src/opensprinkler.js",
+      "run-gate": "src/run-gate.js"
     }
   },
   "devDependencies": {

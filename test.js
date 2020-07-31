@@ -1,11 +1,7 @@
 const helper = require('node-red-node-test-helper');
-const ZoneTimer = require('./zone-timer.js');
-const Program = require('./program.js');
+const ZoneTimer = require('./src/zone-timer.js');
+const Program = require('./src/program.js');
 
-// const zoneDefaults = { type: 'zone-timer', zonenametype: 'str', durationtype: 'str', program: 'program', onval: 'true', onvaltype: 'bool', offval: 'false', offvaltype: 'bool' };
-// const landNode = { id: 'land', zonename: 'Land', duration: '3s', wires: [['grass']], ...zoneDefaults};
-// const grassNode = { id: 'grass', zonename: 'Grass', duration: '4s', wires: [['trees']], ...zoneDefaults};
-// const treesNode = { id: 'trees', zonename: 'trees', duration: '5s', ...zoneDefaults};
 const zone1 = { id: 'n1', type: 'zone-timer', duration: '1s', durationtype: 'str', program: 'progm', wires: [['n2']] };
 const zone2 = { ...zone1, id: 'n2', duration: '4s', wires: [['n3']] };
 const program = { id: 'progm', type: 'program', name: 'Program A' };

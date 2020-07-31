@@ -8,6 +8,8 @@ Need to set up complex programs? Set different schedules for summer and winter? 
 
 ![Sequence of zone-timer nodes](./screenshots/timer-sequence.png)
 
+> **Note:** All of these screenshots are from examples within the library. In Node-RED, click the menu on the top-right, then Import -> Examples -> node-red-contrib-sprinkler.
+
 Create a sequence of **zone timer** nodes. Here, each timer duration is set to `3s`.
 To create the sequence, you'll need to define a program. Programs here are very similar to the concept of "program" traditionally used in irrigation systems: A program is a sequence of zones turned on for different durations. There are some more things to know about programs, but these will be explained later.
 
@@ -19,11 +21,27 @@ After you assemble your schedule, you'll likely want to actually control your ir
 - a template node to transform the zone name into an MQTT topic and then an MQTT node
 - an http request node, GPIO control node, or anything else you can imagine
 
-> **NOTE**: While you can in theory have node-red running on one machine and control hardware an another machine over the network, it is best to run node-red directly on the hardware controlling your sprinklers. If your network fails, your sprinklers can keep running!
+> **Note:** While you can in theory have node-red running on one machine and control hardware an another machine over the network, it is best to run node-red directly on the hardware controlling your sprinklers. If your network fails, your sprinklers can keep running!
 
 ### Timer control
 
 Sometimes you may wish to temporarily pause your sprinkler program if there's a lot of rain. You may also wish to temporarily increase or decrease the amount of time a zone is set to run. You can use a **timerctl out** node to accomplish both these tasks. These actions don't have to be manual. You could connect a weather-detecting node to the **timerctl out** to automatically pause when it is raining! But be sure to uncheck the *"Pause only when program is running"* so that your program doesn't run when paused!
+
+### Gating
+
+What happens if you trigger your program as its already running? You likeley don't want this to happen. Putting a **run-gate** node in front of your **zone-timer** nodes will drop any incoming messages if they are sent while the program is running.
+
+> **Note:** You *definitely* don't want a program to be triggered while it is already running, as each program has only one timer and that timer cannot be timing multiple things at once. If sent a message while the program is running, **zone-timer** nodes will throw an error and drop the message. However, to avoid error messages and enable you to put other node-red nodes at the beginning of your program, it is best to put a **run-gate** at the very beginning.
+
+## Advanced flow
+
+In the examples here with two programs, it has been assumed each program is for a different system, each with its own water source. For example, you may have a systems of sprinklers for the lawn and drips for the plants. However, programs will typically share the same water source, and you'll want to ensure no two programs run at the same time.
+
+![Advanced flow program screenshot](./screenshots/advanced-flow.png)
+
+To ensure no two programs run at once, you can route incoming messages a queue. [Simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue) has a good queue node for this purpose. At the beginning of the program, the triggers will enter the queue. One will pass through (make sure you turn on *"bypass first message"* for this!), and the rest will wait in line. After each program, route the message into a change node, set `msg.reset`, and pass the message into the queue node to release the next trigger waiting in line.
+
+You may be rightly concerned that the queue node is connected to two different nodes. When the message is released from the queue, it will be sent to both nodes! Why don't they both turn on? The **run-gate** node sets `msg.program` to the program's name. **zone-timer** nodes will check this property and drop the incoming message if it is meant for a different program. If you put any other nodes after the queue, make sure to put a switch node or simply add another **run-gate** between the queue and your node to drop the message.
 
 ## Dashboards
 
@@ -31,7 +49,7 @@ You may be curious what your sprinkler setup is doing behind your back. Perhaps 
 
 ![Using sprinkler nodes with dashboard nodes](./screenshots/dashboard.png)
 
-This example uses the [node-red-dashboard](https://flows.nodered.org/node/node-red-dashboard) module. You can make a much more complex dashboard than this example , so make sure to check out the module documentation!
+This example uses the [node-red-dashboard](https://flows.nodered.org/node/node-red-dashboard) module. You can make a much more complex dashboard than this example, so make sure to check out the module documentation!
 
 ## Node Documentation
 
