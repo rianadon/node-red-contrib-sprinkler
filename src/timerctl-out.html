@@ -6,7 +6,7 @@
         defaults: {
             name: {value:""},
             program: {value:"", type:"program", required:true},
-            noblock: {value:true},
+            block: {value:false},
             pauseCmd: {value:"pause"},
             resumeCmd: {value:"resume"},
             decrementCmd: {value:"decrement"},
@@ -39,8 +39,8 @@
         <input type="text" id="node-input-program">
     </div>
     <div class="form-row">
-    <input type="checkbox" id="node-input-noblock" style="display:inline-block; width:auto; vertical-align:top;" />
-    <label for="node-input-noblock" style="width:90%;"></i> Only handle pauses when program is running</label>
+    <input type="checkbox" id="node-input-block" style="display:inline-block; width:auto; vertical-align:top;" />
+    <label for="node-input-block" style="width:90%;"></i> Block program from running when paused</label>
     </div>
     <!-- commands -->
     <div style="margin-bottom: 12px; margin-top: 18px"><b>Command topics</b></div>

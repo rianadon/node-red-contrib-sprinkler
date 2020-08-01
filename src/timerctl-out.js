@@ -16,7 +16,7 @@ module.exports = function(RED) {
             if (!msg.topic) return;
             if (msg.topic == config.pauseCmd) {
                 this.program.emit('pause');
-                if (!config.noblock) this.program.emit('block');
+                if (config.block) this.program.emit('block');
             } else if (msg.topic == config.resumeCmd) {
                 this.program.emit('resume');
                 // Always unblock even if the config isn't set

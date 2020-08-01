@@ -83,6 +83,18 @@ This library uses the same duration format as [eztimer](https://github.com/mrgad
 
 The code for durations is shamelessly copied form eztimer, so huge thanks to that project.
 
+## More examples
+
+Like the other examples, you can find these in the import menu!
+
+### Advanced dashboard
+
+A full-fledged dashboard you can use for your sprinkler control. It uses a subflow for drawing each program's UI, so supporting many programs is quite easy.
+
+![Advanced dashboard flow and UI](./screenshots/advanced-dashboard.png)
+
+The bar chart is for showing which zones are on. There are better third-party components for this type of thing; this example only strives to include only core components and those in the dashboard library.
+
 ## How it works
 
 From a technical standpoint, each node (**zone-timer**, **zone-in**, **zone-out**, etc) is merely a simple interface to its connected **program** configuration node. The program node serves as a combination of a state machine and message bus.
@@ -90,7 +102,7 @@ From a technical standpoint, each node (**zone-timer**, **zone-in**, **zone-out*
 ### Program state machine
 ![Visual representation of program state machine](./screenshots/statediagram.svg)
 
-Each program runs a timer. A visual representation of the various states of the timer are shown above. Both **zone-timer** and **timerctl out** nodes cause the state machine to transition. A **zone-timer** will issue the "start" transition, upon which the timer will start ticking and move itself back to the "stopped" state when the timer reaches zero. The **timerctl out** issues the "resume" and "pause" transitions, and if the *"Pause only when program is running"* option is checked, messages with pause & reset topics will cause "block" and "unblock" transitions as well.
+Each program runs a timer. A visual representation of the various states of the timer are shown above. Both **zone-timer** and **timerctl out** nodes cause the state machine to transition. A **zone-timer** will issue the "start" transition, upon which the timer will start ticking and move itself back to the "stopped" state when the timer reaches zero. The **timerctl out** issues the "resume" and "pause" transitions, and if the *"Block program from running when paused"* option is checked, messages with pause & reset topics will cause "block" and "unblock" transitions as well.
 
 ### Program message bus
 
