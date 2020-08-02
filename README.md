@@ -95,6 +95,20 @@ A full-fledged dashboard you can use for your sprinkler control. It uses a subfl
 
 The bar chart is for showing which zones are on. There are better third-party components for this type of thing; this example only strives to include only core components and those in the dashboard library.
 
+### Rain adjustment
+
+The example uses the Zimmerman method, named for Richard Zimmerman's [weather adjustments built into sprinklers_pi](https://github.com/rszimm/sprinklers_pi/wiki/Weather-adjustments), to adjust the duration scaling based on the amount of rain. Weather data is retrieved from OpenWeatherMap, so you'll need to register an API key with them. The algorithm uses several factors to set the scale:
+
+- Humidity measurements from the previous day (1% humidity = 1% change in scale)
+- Temperature measurements from the previous day (1°F temp = 4% change in scale)
+- Precipitation levels from both yesterday and today (0.01 in = 2% change in scale)
+
+![Rain adjustment flow](./screenshots/rain-scale.png)
+
+The example has two inputs to set the adjustments: One loads weather data from New York City while the other loads data from Las Vegas. The former should yield low adjustments (which would decrease your weathering as NYC can get wet), while Vegas should have high adjustments (it's in a desert!). In fact, adjustments might be so high that they do not proceed past 2x, which is defined as the maximum limit for adjustments.
+
+To adapt the flow to your local area, you should adjust the base temperature, humidity, and precipitation inside the "compute scale" function node. These measurements should correspond to your average annual temperature, humdity, etc. That is, they are the weather conditions the durations you enter for each zone work best in. See the comments inside the node for more details.
+
 ## How it works
 
 From a technical standpoint, each node (**zone-timer**, **zone-in**, **zone-out**, etc) is merely a simple interface to its connected **program** configuration node. The program node serves as a combination of a state machine and message bus.
