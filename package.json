@@ -1,12 +1,12 @@
 {
   "name": "node-red-contrib-sprinkler",
   "version": "1.0.0",
-  "description": "Sprinkler controls for node-red",
+  "description": "Powerful sprinkler controls for Node-RED",
+  "repository": "github:rianadon/node-red-contrib-sprinkler"
   "scripts": {
     "test": "mocha test.js"
   },
-  "author": "",
-  "keywords": [ "node-red" ],
+  "keywords": [ "node-red", "sprinkler", "irrigation", "schedule" ],
   "license": "MIT",
   "node-red": {
     "nodes": {

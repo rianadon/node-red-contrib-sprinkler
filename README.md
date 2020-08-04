@@ -1,4 +1,4 @@
-# Node-red-contrib-sprinkler
+# node-red-contrib-sprinkler
 
 Looking for more flexibility than your dumb sprinkler controller provides? Use Node-RED flows to:
 
@@ -9,8 +9,6 @@ Looking for more flexibility than your dumb sprinkler controller provides? Use N
 :robot: Connect to OpenSprinkler, MQTT, or GPIO pins. Hardware independent!\
 :brain: Use machine learning to optimize your watering schedule (example not included)\
 :exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
-
-*Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.*
 
 ## Getting started
 
@@ -36,7 +34,7 @@ After you assemble your schedule, you'll likely want to actually control your ir
 
 Sometimes you may wish to temporarily pause your sprinkler program if there's a lot of rain. You may also wish to temporarily increase or decrease the amount of time a zone is set to run. You can use a **timerctl out** node to accomplish both these tasks. These actions don't have to be manual. You could connect a weather-detecting node to the **timerctl out** to automatically pause when it is raining! But be sure to uncheck the *"Pause only when program is running"* so that your program doesn't run when paused!
 
-### Gating
+### Gates
 
 What happens if you trigger your program as its already running? You likeley don't want this to happen. Putting a **run-gate** node in front of your **zone-timer** nodes will drop any incoming messages if they are sent while the program is running.
 
