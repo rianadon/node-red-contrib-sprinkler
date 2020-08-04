@@ -7,13 +7,10 @@ Looking for more flexibility than your dumb sprinkler controller provides? Use N
 :bell: Send notifications when a zone turns on or when a program runs\
 :desktop_computer: Use your own UI or customize one of the examples\
 :robot: Connect to OpenSprinkler, MQTT, or GPIO pins. Hardware independent!\
-:brain: Use machine learning to optimize your watering schedule †\
+:brain: Use machine learning to optimize your watering schedule (example not included)\
 :exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
 
 *Disclaimer: Most of these tasks require additional nodes outside those provided by this library. Knowledge of Node-RED and mental labor required.*
-
-------
-*† Maybe linear regression with weather data? Please don't make me use tensorflow.*
 
 ## Getting started
 
@@ -93,7 +90,7 @@ A full-fledged dashboard you can use for your sprinkler control. It uses a subfl
 
 ![Advanced dashboard flow and UI](./screenshots/advanced-dashboard.png)
 
-The bar chart is for showing which zones are on. There are better third-party components for this type of thing; this example only strives to include only core components and those in the dashboard library.
+The bar chart is for showing which zones are on. There are better third-party components for this type of thing; this example strives to include only core components and those in the dashboard library.
 
 ### Rain adjustment
 
@@ -107,7 +104,9 @@ The example uses the Zimmerman method, named for Richard Zimmerman's [weather ad
 
 The example has two inputs to set the adjustments: One loads weather data from New York City while the other loads data from Las Vegas. The former should yield low adjustments (which would decrease your weathering as NYC can get wet), while Vegas should have high adjustments (it's in a desert!). In fact, adjustments might be so high that they do not proceed past 2x, which is defined as the maximum limit for adjustments.
 
-To adapt the flow to your local area, you should adjust the base temperature, humidity, and precipitation inside the "compute scale" function node. These measurements should correspond to your average annual temperature, humdity, etc. That is, they are the weather conditions the durations you enter for each zone work best in. See the comments inside the node for more details.
+To adapt the flow to your local area, you should adjust the base temperature, humidity, and precipitation inside the "compute scale" function node. These measurements should correspond to your average annual temperature, humdity, etc. That is, they are the weather conditions in wich the durations you enter for each zone work best. See the comments inside the node for more details.
+
+For more accurate rain adjustment, you can use your own temperature and humidity sensors rather than the OpenWeatherMap API! Cobbling together a temperature/humidity sensor with an [ESPHome device](https://esphome.io/) can be very affordable. And then you have one fewer cloud service to rely on. :grin:
 
 ## How it works
 
