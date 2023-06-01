@@ -10,6 +10,8 @@ Looking for more flexibility than your dumb sprinkler controller provides? Use N
 :brain: Use machine learning to optimize your watering schedule (example not included)\
 :exploding_head: Connect Node-RED nodes to accomplish whatever your imagination desires
 
+> ❕ **NOTICE** It turns out I did not need this amount of flexibility and have switched to using the OpenSprinkler project for my own needs, so I'm no longer adding new features to this project. That said, the package still does its job should you decide to use it.
+
 ## Getting started
 
 ![Sequence of zone-timer nodes](./screenshots/timer-sequence.png)
